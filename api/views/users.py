@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework import status, generics
 from rest_framework.authtoken.models import Token
 from ..serializers.user import UserSerializer
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 class SignUp(generics.CreateAPIView):
         # Override the authentication/permissions classes so this endpoint
@@ -48,3 +48,14 @@ class SignIn(generics.CreateAPIView):
             })
         else:
             return Response({ 'msg': 'The username and/or password is incorrect.' }, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+    
+class SignOut(generics.DestroyAPIView):
+    def delete(self, request):
+        user = request.user
+        # Remove this token from the user
+        Token.objects.filter(user=user).delete()
+        user.token = None
+        user.save()
+        # Logout will remove all session data
+        logout(request)
+        return Response(status=status.HTTP_204_NO_CONTENT)
