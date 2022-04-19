@@ -59,3 +59,19 @@ class SignOut(generics.DestroyAPIView):
         # Logout will remove all session data
         logout(request)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+# change password
+class ChangePassword(generics.UpdateAPIView):
+    def patch(self, request):
+        user = request.user
+        # include token in the request
+        old_pw = request.data['passwords']['old']
+        new_pw = request.data['passwords']['new']
+        # user.check_password <-- check to see the password is correct
+        if not user.check_password(old_pw):
+            return Response({ 'msg': 'Wrong password' }, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+        
+        # set_password
+        user.set_password(new_pw)
+        user.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
