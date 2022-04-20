@@ -1,10 +1,9 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
-class Text(models.Model):
+class Image(models.Model):
     title = models.CharField(max_length=100)
-    body = models.TextField(max_length=5000)
-    attribution = models.CharField(max_length=100)
+    image = models.CharField(max_length=500)
     tags = models.JSONField()
     owner = models.ForeignKey(
         get_user_model(),
