@@ -1,6 +1,8 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
+from django.shortcuts import get_object_or_404
+from django.core.exceptions import PermissionDenied
 from ..serializers.text import TextSerializer
 from ..serializers.image import ImageSerializer
 from ..models.text import Text
@@ -36,6 +38,22 @@ class KitView(APIView):
                 return Response(image.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             print('sadface')
+
+class TextView(APIView):
+    def put(self, request, pk):
+        request.data['owner'] = request.user.id
+        text = get_object_or_404(Text, pk=pk)
+        if request.user != text.owner:
+            raise PermissionDenied('Unauthorized, you do not have access to this kit.')
+        updated_text = TextSerializer(text, data=request.data)
+        if updated_text.is_valid():
+            updated_text.save()
+            return Response(updated_text.data, status=status.HTTP_200_OK)
+        else:
+            return Response(updated_text.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 
 
         
