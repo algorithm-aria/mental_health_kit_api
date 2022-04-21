@@ -72,6 +72,38 @@ class TextView(APIView):
         text.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+class ImageView(APIView):
+    #get an individual image via id
+    def get(self, request, pk):
+        image = get_object_or_404(Image, pk=pk)
+        if request.user != image.owner:
+            raise PermissionDenied('Unauthorized, you do not have access to this kit.')
+        data = ImageSerializer(image).data
+        return Response(data, status=status.HTTP_200_OK)
+
+    #edit an individual image via id
+    def put(self, request, pk):
+        request.data['owner'] = request.user.id
+        image = get_object_or_404(Image, pk=pk)
+        if request.user != image.owner:
+            raise PermissionDenied('Unauthorized, you do not have access to this kit.')
+        updated_image = ImageSerializer(image, data=request.data)
+        if updated_image.is_valid():
+            updated_image.save()
+            return Response(updated_image.data, status=status.HTTP_200_OK)
+        else:
+            return Response(updated_image.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    #delete an individual image via id
+    def delete(self, request, pk):
+        image = get_object_or_404(Image, pk=pk)
+        if request.user != image.owner:
+            raise PermissionDenied('Unauthorized, you do not have access to this kit.')
+        image.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
 
 
 

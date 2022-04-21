@@ -1,6 +1,6 @@
 from django.urls import path
 
-from api.views.kit import KitView, TextView
+from api.views.kit import KitView, TextView, ImageView
 from .views.users import SignUp, SignIn, SignOut, ChangePassword
 
 urlpatterns = [
@@ -10,5 +10,5 @@ urlpatterns = [
     path('change-password/', ChangePassword.as_view(), name='change-password'),
     path('my-kit/', KitView.as_view(), name='my-kit'),
     path('my-kit/text/<int:pk>/', TextView.as_view(), name='my-kit'),
-    # path('my-kit/Image/<int:pk>/', ImageView.as_view(), name='my-kit'),
+    path('my-kit/image/<int:pk>/', ImageView.as_view(), name='my-kit'),
 ]
