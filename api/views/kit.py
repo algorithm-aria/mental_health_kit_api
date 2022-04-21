@@ -43,6 +43,14 @@ class KitView(APIView):
             print('sadface')
 
 class TextView(APIView):
+    #get an individual text via id
+    def get(self, request, pk):
+        text = get_object_or_404(Text, pk=pk)
+        if request.user != text.owner:
+            raise PermissionDenied('Unauthorized, you do not have access to this kit.')
+        data = TextSerializer(text).data
+        return Response(data, status=status.HTTP_200_OK)
+
     #edit an individual text via id
     def put(self, request, pk):
         request.data['owner'] = request.user.id
