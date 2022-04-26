@@ -1,1 +1,1 @@
-web: gunicorn mental_health_kit_api.wsgi
+web: gunicorn mental_health_kit.wsgi
