@@ -90,6 +90,7 @@ WSGI_APPLICATION = 'mental_health_kit.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
+# Environmental variables are fun!
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
